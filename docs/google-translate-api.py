@@ -5,7 +5,7 @@ from google.cloud import translate
 translate_client = translate.Client()
 
 # The text to translate
-text = u'Subtee c'est trop génial!'
+text = u'Subbag c'est trop génial!'
 # The target language
 target = 'en'
 
