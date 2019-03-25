@@ -24,7 +24,7 @@ bool eventReceived = false;  // whether the string is complete
 
 
 void setup() {
-  Serial.begin(9600);
+  //Serial.begin(9600);
   
   // set up the LCD's number of columns and rows
   lcd.begin(16, 2);
@@ -34,23 +34,28 @@ void setup() {
 
 
 void loop() {
+   // set up the LCD's number of columns and rows
+  lcd.begin(16, 2);
+  // Print a message to the LCD
+  lcd.print("SubBag v0.1");
   // set the cursor to column 0, line 1
   // (line 1 is the second row, since counting begins with 0)
-  lcd.setCursor(0, 1);
+  //lcd.setCursor(0, 1);
 
   /** Event Received from PC **/
-  if (eventReceived) {
-    lcd.setCursor(0, 1);
+  //if (eventReceived) {
+    //lcd.setCursor(0, 1);
     // print the number of seconds since reset:
-    lcd.print(eventString);
+    //lcd.print(eventString);
     
     // clear the string:
-    eventString = "";
-    eventReceived = false;
-  }
+    //eventString = "";
+    //eventReceived = false;
+  //}
 
 }
 
+/**
 void serialEvent() {
   while (Serial.available()) {
     // get the new byte:
@@ -63,4 +68,4 @@ void serialEvent() {
       eventReceived = true;
     }
   }
-}
+}*/
