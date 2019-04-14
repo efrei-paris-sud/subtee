@@ -12,7 +12,7 @@
 * wiper to LCD VO pin (pin 3)
 */
 
-// include the library code:
+// include the library code :
 #include <LiquidCrystal.h>
 
 
