@@ -1,6 +1,4 @@
-/* Audio streamer with ESP32 and Adafruit elected microphone board. 
-
-*/
+/* Audio streamer with ESP32 and Adafruit elected microphone board. */
 #include <Arduino.h>
 #include <WiFi.h>
 #include <driver/adc.h>
