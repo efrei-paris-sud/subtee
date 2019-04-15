@@ -9,20 +9,20 @@ api = Api(app)
 class Translation(Resource):
     def post(self):
         parser = reqparse.RequestParser()
-        parser.add_argument("string")
-        parser.add_argument("lang_source")
-        parser.add_argument("lang_dest")
+        parser.add_argument("string", required=True)
+        parser.add_argument("lang_src", required=True)
+        parser.add_argument("lang_dest", required=True)
         args = parser.parse_args()
 
         translator = Translator()
         try:
-            translation = translator.translate(args['string'], src=args['lang_source'], dest=args['lang_dest'])
+            translation = translator.translate(args['string'], src=args['lang_src'], dest=args['lang_dest'])
         except ValueError:
             return 'Cannot Translate', 409
 
         print("/translate : '{}' [{}] -> '{}' [{}]".format(
             args['string'],
-            args['lang_source'],
+            args['lang_src'],
             translation.text,
             args['lang_dest']
         ))

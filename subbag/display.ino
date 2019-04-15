@@ -1,27 +1,17 @@
 /*
-  LiquidCrystal Library - Hello World
+ This file contains all display related code.
 
- Demonstrates the use a 16x2 LCD display.  The LiquidCrystal
- library works with all LCD displays that are compatible with the
- Hitachi HD44780 driver. There are many of them out there, and you
- can usually tell them by the 16-pin interface.
-
- This sketch prints "Hello World!" to the LCD
- and shows the time.
-
-  The circuit:
- * LCD RS pin to digital pin 12
- * LCD Enable pin to digital pin 11
- * LCD D4 pin to digital pin 5
+ The circuit :
+ * LCD RS pin to digital pin 15
+ * LCD Enable pin to digital pin 2
+ * LCD D4 pin to digital pin 0
  * LCD D5 pin to digital pin 4
- * LCD D6 pin to digital pin 3
- * LCD D7 pin to digital pin 2
+ * LCD D6 pin to digital pin 16
+ * LCD D7 pin to digital pin 17
  * LCD R/W pin to ground
  * LCD VSS pin to ground
  * LCD VCC pin to 5V
- * 10K resistor:
- * ends to +5V and ground
- * wiper to LCD VO pin (pin 3)
+ * V0 is hooked to the ground via a resistor (contrast setting)
 */
 
 // include the library code:
@@ -33,13 +23,37 @@ const int rs = 15, en = 2, d4 = 0, d5 = 4, d6 = 16, d7 = 17;
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 
 void displaySetup() {
-  // set up the LCD's number of columns and rows:
   lcd.begin(16, 2);
-  // Print a message to the LCD.
-  //lcd.print("hello, world!");
 }
 
 void displayString(String string) {
+  string.trim();
+  int i = 0;
+  bool firstLoop = true;
+  String toShow;
+
+  while(true) {
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    toShow = string.substring(i, i+16);
+    if(toShow == "") {
+      break;
+    }
+    lcd.print(toShow);
+    i = i + 2;
+
+    /* let some time for the reader to read */
+    if(firstLoop) {
+      delay(1000);
+      firstLoop = false;
+    } else {
+      delay(250);
+    }
+  }
+}
+
+void __old_displayString(String string) {
+  string.trim();
   String part = string.substring(0, 33);
   String top, bottom;
   int to = 33;
@@ -54,6 +68,6 @@ void displayString(String string) {
     
     part = string.substring(to, to + 32);
     to = to + 32;
-    delay(2000);
+    delay(3000);
   }
 }

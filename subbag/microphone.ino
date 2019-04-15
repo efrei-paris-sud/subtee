@@ -1,5 +1,3 @@
-#include <Arduino.h>
-
 #include <driver/adc.h>
 
 #define AUDIO_BUFFER_MAX 800
@@ -8,13 +6,7 @@ uint8_t audioBuffer[AUDIO_BUFFER_MAX];
 uint8_t transmitBuffer[AUDIO_BUFFER_MAX];
 uint32_t bufferPointer = 0;
 
-const char* ssid     = "SM-G900W8_6851";
-const char* password = "smza4883";
-const char* host     = "192.168.43.72";
-
 bool transmitNow = false;
-
-WiFiClient client;
 
 hw_timer_t * timer = NULL; // our timer
 portMUX_TYPE timerMux = portMUX_INITIALIZER_UNLOCKED; 
