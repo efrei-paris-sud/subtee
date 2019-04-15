@@ -1,0 +1,127 @@
+
+/**
+* LCD RS pin to digital pin 11 (12) / 8
+* LCD Enable pin to digital pin 10 (14) / 9
+* LCD D4 pin to digital pin 33 : 10
+* LCD D5 pin to digital pin 25 11
+* LCD D6 pin to digital pin 26 12
+* LCD D7 pin to digital pin 27 13
+* LCD R/W pin to ground
+* 10K variable resistor:
+* ends to +5V and ground
+* wiper to LCD VO pin (pin 3)
+* MICROPHONE out p23
+* 
+*/
+
+// include the library code:
+//#include <LiquidCrystal.h>
+
+
+// Initialize the library with the interface pins
+//LiquidCrystal lcd(8, 9, 10, 11, 12, 13);
+// RS, EN, D4, D5, D6, D7
+//LiquidCrystal lcd(0, 2, 15, 8, 7, 6);
+
+//const int microphonePin= 0; //the microphone positive terminal will connect to analog pin A0 to be read
+//const int ledPin=13; //the code will flash the LED connected to pin 13
+//
+//int sample; //the variable that will hold the value read from the microphone each time
+//
+//const int threshold= 1500;//the microphone threshold sound level at which the LED will turn on
+//
+//void setup() {
+//Serial.begin(115200); //sets the baud rate at 9600 so we can check the values the microphone is obtaining on the Serial Monitor
+//}
+//
+//void loop(){
+//sample= analogRead(34); //the arduino takes continuous readings from the microphone
+//Serial.println(sample);
+//if (sample > threshold)
+//{
+////delay (100); //LED stays on for a half a second
+//}
+//else{ }
+//} 
+
+
+/* Audio streamer with ESP32 and Adafruit elected microphone board. 
+ * Created by Julian Schroeter.
+*/
+#include <Arduino.h>
+#include <WiFi.h>
+#include <driver/adc.h>
+
+#define AUDIO_BUFFER_MAX 800
+
+uint8_t audioBuffer[AUDIO_BUFFER_MAX];
+uint8_t transmitBuffer[AUDIO_BUFFER_MAX];
+uint32_t bufferPointer = 0;
+
+const char* ssid     = "SM-G900W8_6851";
+const char* password = "smza4883";
+const char* host     = "192.168.43.72";
+
+bool transmitNow = false;
+
+WiFiClient client;
+
+hw_timer_t * timer = NULL; // our timer
+portMUX_TYPE timerMux = portMUX_INITIALIZER_UNLOCKED; 
+
+void IRAM_ATTR onTimer() {
+  portENTER_CRITICAL_ISR(&timerMux); // says that we want to run critical code and don't want to be interrupted
+  int adcVal = adc1_get_voltage(ADC1_CHANNEL_0); // reads the ADC
+  uint8_t value = map(adcVal, 0 , 4096, 0, 255);  // converts the value to 0..255 (8bit)
+  audioBuffer[bufferPointer] = value; // stores the value
+  bufferPointer++;
+ 
+  if (bufferPointer == AUDIO_BUFFER_MAX) { // when the buffer is full
+    bufferPointer = 0;
+    memcpy(transmitBuffer, audioBuffer, AUDIO_BUFFER_MAX); // copy buffer into a second buffer
+    transmitNow = true; // sets the value true so we know that we can transmit now
+  }
+  portEXIT_CRITICAL_ISR(&timerMux); // says that we have run our critical code
+}
+
+
+void setup() {
+  //Serial.begin(9600);
+
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(ssid, password);
+
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    //Serial.println(WiFi.status());
+  }
+
+  //Serial.println("");
+  //Serial.println("WiFi connected");
+  //Serial.println("MY IP address: ");
+  //Serial.println(WiFi.localIP());
+  
+  adc1_config_width(ADC_WIDTH_12Bit); // configure the analogue to digital converter
+  adc1_config_channel_atten(ADC1_CHANNEL_0, ADC_ATTEN_0db); // connects the ADC 1 with channel 0 (GPIO 36)
+
+  const int port = 4444;
+  while (!client.connect(host, port)) {
+    //Serial.println("connection failed");
+    delay(1000);
+  }
+
+  //Serial.println("connected to server");
+
+  timer = timerBegin(0, 80, true); // 80 Prescaler
+  timerAttachInterrupt(timer, &onTimer, true); // binds the handling function to our timer 
+  timerAlarmWrite(timer, 125, true);
+  timerAlarmEnable(timer);
+
+}
+
+void loop() {
+  if (transmitNow) { // checks if the buffer is full
+    transmitNow = false;
+    client.write((const uint8_t *)audioBuffer, sizeof(audioBuffer)); // sending the buffer to our server
+  }
+}
