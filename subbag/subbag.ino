@@ -6,9 +6,9 @@
 void setup(void) {
   Serial.begin(9600);
   displaySetup();
-  wifiSetup();
+  //wifiSetup();
 }
 
 void loop(void) {
-  displayString("hello guys, how are you ? i'm fine and you. What do you think about this shit ?");
+  displayString("Bonjour");
 }
