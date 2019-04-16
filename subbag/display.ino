@@ -47,7 +47,7 @@ void displayString(String string) {
       delay(1000);
       firstLoop = false;
     } else {
-      delay(250);
+      delay(450);
     }
   }
 }

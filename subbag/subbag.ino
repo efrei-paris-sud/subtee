@@ -1,6 +1,7 @@
 
 #include <Arduino.h>
 #include "secrets.h"
+#include "SPIFFS.h"
 
 /** 
  *  Event management global variables 
@@ -24,6 +25,12 @@ void setup(void) {
   wifiSetup(WIFI_SSID, WIFI_PASS);
 
   pinMode(BUTTON_1_PIN, INPUT);
+
+  /* Mount FS to read files from the flash memory */
+  if(!SPIFFS.begin(true)) {
+     Serial.println("An Error has occurred while mounting SPIFFS");
+     return;
+  }
 }
 
 /**
@@ -43,9 +50,20 @@ void loop(void) {
   /* Manually trigger translation for the demo */
   if(digitalRead(BUTTON_1_PIN) == HIGH) {
     Serial.println("Button 1 triggered");
-    displayString("Triggered");
 
+    processButton1();
+
+    delay(1000);
   }
+}
+
+/**
+ * Function for demo purpose, reads a file from fs for Speech-To-Text processing server-side, then translate the text and displays the translation.
+ */
+void processButton1(void) {
+  String rtn = apiMockSpeechToText("/bonjour.ogg");
+  rtn = apiTranslate(rtn, "fr", "en");
+  displayString(rtn);
 }
 
 /**
