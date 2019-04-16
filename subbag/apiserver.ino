@@ -3,14 +3,16 @@
  */
 #include <HTTPClient.h>
 
-#define API_ENDPOINT_TRANSLATE "http://83dd095b.ngrok.io/translate"
+#define API_ENDPOINT_TRANSLATE "http://b71391b6.ngrok.io/translate"
 
 HTTPClient httpClient;
 
 String apiTranslate(String string, String lang_src, String lang_dest) {
   string.trim();
-  String postData = String("{\"string\": \"") + string + String("\", \"lang_src\": \"fr\", \"lang_dest\": \"en\"}");
+
+  String postData = String("{\"string\": \"") + string + String("\", \"lang_src\": \"") + lang_src + String("\", \"lang_dest\": \"") + lang_dest + String("\"}");
   Serial.println(postData);
+
   httpClient.begin(API_ENDPOINT_TRANSLATE);
   httpClient.addHeader("Content-Type", "application/json");
 
