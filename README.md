@@ -18,13 +18,10 @@ With SUBTEE we can put subtitle directly on our shirt in order to understand wha
 While transcripting what you are saying, we gonna also analyse what you re feelings towards what your saying with a recognition of positive or negative words.
 
 
+## Project Structure
 
-## Component needed
-* A shirt
-* Screen LED
-* Microphone
-* Wireless Adapter (connection to the phone)
-* Controller (Arduino/RaspberryPi)
-* Click-Button
-* Batteries
-* Electrical wires
+- docs/ : contains documentation and project reports
+- misc/ : "playground" files for testing purposes, kept for archiving purpose
+- src/
+-     server/ : Python server sources
+-     subbag/ : Arduino sources
