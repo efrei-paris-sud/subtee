@@ -2,8 +2,6 @@
 
 WiFiClient client;
 
-const char* host = "192.168.43.72";
-
 void wifiSetup(String ssid, String password) {
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid.c_str(), password.c_str());

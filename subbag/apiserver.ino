@@ -4,9 +4,6 @@
 #include <HTTPClient.h>
 #include "UDHttp.h"
 
-#define API_ENDPOINT_TRANSLATE "http://fd527d16.ngrok.io/translate"
-#define API_ENDPOINT_STT "http://fd527d16.ngrok.io/speech-to-text"
-
 HTTPClient httpClient;
 File root;
 
@@ -18,7 +15,8 @@ String apiTranslate(String string, String lang_src, String lang_dest) {
   String postData = String("{\"string\": \"") + string + String("\", \"lang_src\": \"") + lang_src + String("\", \"lang_dest\": \"") + lang_dest + String("\"}");
   Serial.println(postData);
 
-  httpClient.begin(API_ENDPOINT_TRANSLATE);
+  String endpoint = String(API_ENDPOINT) + String("/translate");
+  httpClient.begin(endpoint.c_str());
   httpClient.addHeader("Content-Type", "application/json");
 
   int httpResponseCode = httpClient.POST(postData);
@@ -42,10 +40,10 @@ String apiTranslate(String string, String lang_src, String lang_dest) {
 
 String apiMockSpeechToText(String filename) {
   String postData = String("");
-  
-  httpClient.begin(API_ENDPOINT_STT);
 
   Serial.println("STT Request");
+  String endpoint = String(API_ENDPOINT) + String("/speech-to-text");
+  httpClient.begin(endpoint.c_str());
   int httpResponseCode = httpClient.POST(postData);
   String response = httpClient.getString();
 
@@ -74,8 +72,8 @@ String apiSpeechToText(String filename) {
   }
   Serial.print("size:");
   Serial.println(root.size());
-
-  udh.upload(API_ENDPOINT_STT, "fr", root.size(), rdataf, progressf, responsef);
+  String endpoint = String(API_ENDPOINT) + String("/speech-to-text");
+  udh.upload((char*) endpoint.c_str(), "fr", root.size(), rdataf, progressf, responsef);
   root.close();
   Serial.printf("done uploading\n");
 
