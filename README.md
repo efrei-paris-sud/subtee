@@ -23,6 +23,7 @@ While transcripting what you are saying, we gonna also analyse what you re feeli
 - docs/ : contains documentation and project reports
 - misc/ : "playground" files for testing purposes, kept for archiving purpose
 - src/
+
     server/ : Python server sources
     
     subbag/ : Arduino sources
