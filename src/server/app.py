@@ -36,7 +36,7 @@ class Translation(Resource):
 
 class SpeechToText(Resource):
     def post(self):
-        audioName = "bonjour-thomas.wav"
+        audioName = "test.wav"
         sourceLanguage = "fr"
 
         r = sr.Recognizer()
