@@ -1,3 +1,8 @@
+/**
+ * Microphone interface code. @see /misc/microphone.ino for testing.
+ * This file is not used.
+ */
+
 #include <driver/adc.h>
 
 #define AUDIO_BUFFER_MAX 800
